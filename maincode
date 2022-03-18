@@ -1,0 +1,39 @@
+#Install or connect the libraries needed for this code
+library(ggplot2)
+library(vegan)
+library(ComplexHeatmap)
+library(ape)
+library(ggtern)
+
+#For the heatmaps use ComplexHeatmap package
+DATA INPUT
+Heatmap(my_data1, row_order = rownames(my_data1), width = unit(8, 'cm')) #This will create the heatmap without the dendrogram
+
+#For the dendrogram use ape
+my_data1 <- read.table(file = "clipboard", sep = "\t", header=TRUE) 
+#All the classes should be transformed to factors
+my_data1$Class6 <- factor(my_data1$Class6)
+my_data1$Class5 <- factor(my_data1$Class5)
+my_data1$Class4 <- factor(my_data1$Class4)
+my_data1$Class3 <- factor(my_data1$Class3)
+my_data1$Class2 <- factor(my_data1$Class2)
+my_data1$Class1 <- factor(my_data1$Class1)
+tree <- as.phylo(~Class1/Class2/Class3/Class4/Class5/Class6, data = my_data1)
+plot(tree)
+
+#For the ternary diagrams ggtern can be used. We have 5 (1 control + 2 + 2) materials and 2 groups, so every plot has a control group and two materials.
+GGTERN2 <- read.table(file = "clipboard", sep = "\t", header=TRUE)
+ggtern(data = GGTERN2, aes(x = CM.C, y = CM.CF, z = CM.PF, size = 5)) #DELETE BEFORE PASTE. x is a control group, while y and z can be changed for different groups.
+ + geom_point(aes(fill = Taxonomy, color = Taxonomy, size = firstplot))
+ + geom_text(aes(label = Taxonomy)) + theme(legend.position = 'none') + theme_bw()
+ 
+ #For the RDA plot use vegan. You may need to install the package 'phylogram'.
+ DATA INPUT
+ data.log <- log1p(data)
+ data.hell <- decostand(data.log, 'hell')
+ tbRDA <- rda(data.hell ~ y + k + lambda + t75 + teff + r2, data = data)
+ 
+ fig <- ordiplot(tbRDA, type = 'points', scaling = 3)
+ points(fig, 'sites', pch = 20, col = 'black', bg = 'black', cex = 0.8)
+ text(fig, 'sites', col = 'red', cex = 0.8)
+ fig
